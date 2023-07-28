@@ -78,6 +78,11 @@ void SdDev::init() {
 
   dbg("SD", slot, ' ');
 
+  if (mode == SdDev::DISABLED) {
+    dbg("is disabled.\n");
+    return;
+  }
+
   unsigned int rate;
   for(rate = 0; rate < sizeof(sdRates)/sizeof(sdRates[0]); ++rate) {
     lastMediaCheckTime = millis();
