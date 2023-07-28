@@ -71,6 +71,17 @@ void SdDev::reset() {
 }
 
 void SdDev::init() {
+  // Check if the device is disabled (wpPin pin to VCC)
+  pinMode(wpPin, INPUT_PULLDOWN);
+  delayMicroseconds(10);
+  if(digitalRead(wpPin)) {
+    // wpPin pin to VCC: unit disabled
+    pinMode(wpPin, INPUT_PULLUP);
+    disable();
+    dbg("SD", slot, " is disabled.\n");
+    return;
+  }
+
   reset();
 
   // Set wp pin as input pullup to read write lock later
@@ -78,10 +89,10 @@ void SdDev::init() {
 
   dbg("SD", slot, ' ');
 
-  if (mode == SdDev::DISABLED) {
-    dbg("is disabled.\n");
-    return;
-  }
+  // if (mode == SdDev::DISABLED) {
+  //   dbg("is disabled.\n");
+  //   return;
+  // }
 
   unsigned int rate;
   for(rate = 0; rate < sizeof(sdRates)/sizeof(sdRates[0]); ++rate) {
